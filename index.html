@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Làm thiệp 20/10</title>
+  <meta property="og:description" content="Tạo thiệp 20/10 dễ dàng cùng B&M. Chọn mẫu, nhập lời chúc và tải về PDF ngay!">
+  <title>Làm thiệp 20/10 cùng B&M</title>
 
   <!-- Fonts (hỗ trợ tiếng Việt) -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital@0;1&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
@@ -303,14 +304,17 @@
 </head>
 <body>
   <div class="container">
+
     <div class="controls">
       <h3>Thiết lập thiệp</h3>
 
       <label for="mau" class="text">Chọn mẫu</label>
-      <select id="mau" class="input">
+      <select id="mau" class="input" onchange="updatePreview()"> 
         <option value="hong">💖 Hồng nhẹ</option>
         <option value="xanh">💙 Xanh pastel</option>
         <option value="vang">💛 Vàng tươi</option>
+        <option value="tim">💜 Tím nhẹ</option>
+        <option value="hong_dao">🌹 Hồng đào</option>
       </select>
 
       <label for="can" class="text">Căn lề chữ</label>
@@ -331,20 +335,35 @@
         <option value="Ảnh/anh6.jpg">Nền vuông</option>
         <option value="Ảnh/anh7.jpg">Nền hoa tím</option>
         <option value="Ảnh/anh8.jpg">Vườn hoa</option>
+        <option value="Ảnh/anh9.jpg">Đóa hoa</option>
+        <option value="Ảnh/anh10.jpg">Hoạt họa</option>
+        <option value="Ảnh/anh11.webp">Đơn giản</option>
+        <option value="Ảnh/anh12.webp">Bông hồng</option>
+        <option value="Ảnh/anh13.webp">Dịu dàng</option>
+        <option value="Ảnh/anh14.webp">Nhẹ nhàng</option>
+        <option value="Ảnh/anh15.jpg">Tinh tế</option>
       </select>
-
+      <p class="note">Thiết kế bạn muốn gửi đến bằng trái tim</p>
       <label for="ten">Tên người nhận</label>
       <input id="ten" placeholder="Nhập tên người nhận" class="input">
-
+      <p class="note">Khi tặng thiệp, hãy dành chút thời gian kể cho người nhận nghe về hành trình bạn tạo nên tấm thiệp này trong chiến dịch quyên góp sách thắp sáng ước mơ cho trẻ em khó khăn. Hành động ý nghĩa từ tấm lòng.</p>
       <label for="lop" class="text">Nhập lớp của bạn</label>
       <input id="lop" type="text" class="input" placeholder="Nhập lớp bạn đang học (VD: 10D6 hoặc D6)">
 
       <label for="content" class="text">Lời chúc</label>
       <textarea id="content" class="input" placeholder="Nhập lời chúc...">Có những ngày dù nắng hay mưa, những ngày ngồi nghe tiếng cô giảng, đó là một trong những ký ức tuổi học trò thật tươi đẹp. Dưới mái trường thân yêu, trên con đò cập bến tri thức, nhân ngày 20/10: Con xin chúc cô luôn mạnh khỏe, luôn rực rỡ để tiếp tục cùng chúng con đi đi tiếp những quãng đường phía trước để cập bến tri thức.</textarea>
+      <p class="note">Nên viết trong khoảng 200 chữ để tránh mất chữ.</p>
+
+      <label class="text">Gắn phần cuối</label>
+      <select id="cuoi" class="input" onchange="updatePreview()">
+        <option value="1">— Cùng với B&M</option>
+        <option value="2">— Từ tấm lòng</option>
+        <option value="3">— Cùng B&M hành đồng đầy ý nghĩa</option>
+      </select>
 
       <label for="bgfile" class="text">Upload ảnh nền</label>
       <input id="bgfile" class="input" type="file" accept="image/*">
-
+      <p class="note">Tự tải lên thiết kế riêng của bạn nếu muốn nhé!</p>
       <div class="button-group">
         <button onclick="updatePreview()">Xem trước</button>
         <button class="secondary" onclick="exportPDF()">Tải PDF</button>
@@ -355,18 +374,19 @@
         <div>Đang tạo thiệp...</div>
       </div>
 
+      <p class="note">Nhanh hơn với Book and Media</p>
       <p class="note">
         Tải ảnh lên để làm thiệp nhé! Ứng dụng hoạt động tốt nhất trên trình duyệt Chrome và Safari.
       </p>
     </div>
 
     <div class="preview-wrap">
-      <div id="thiep" class="hong">
-        <div class="title">Lời chúc yêu thương 20-10</div>
+      <div id="thiep" class="mauvien">
+        <div class="title" id="color-title">Lời chúc yêu thương 20-10</div>
         <div id="lopban" class="lopban"></div>
         <div id="recipient" class="recipient"></div>
         <div id="message" class="message"></div>
-        <div class="sign">— Từ tấm lòng</div>
+        <div class="sign" id="signText">— Từ tấm lòng</div>
         <div class="overlay"></div>
       </div>
     </div>
@@ -387,6 +407,9 @@
   const bgFileInput  = document.getElementById('bgfile');
   const btnExport    = document.querySelector('button.secondary');
   const loadingEl    = document.getElementById('loading');
+  const phancuoiEl   = document.getElementById('cuoi');
+  const signEl       = document.getElementById('signText');
+  const color_titleEl = document.getElementById('color-title');
 
   // === Event listeners ===
   selectMau.addEventListener('change', updatePreview);
@@ -406,6 +429,25 @@
     elThiep.classList.remove('hong', 'xanh', 'vang');
     elThiep.classList.add(selectMau.value);
 
+    const colorValue = selectMau.value;
+
+    if (colorValue === 'hong') {
+      elThiep.style.borderColor = '#e89bbc';
+      color_titleEl.style.color = '#c27ba0';
+    } else if (colorValue === 'xanh') {
+      elThiep.style.borderColor = '#80bfff';
+      color_titleEl.style.color = '#6b9bd6';
+    } else if (colorValue === 'vang') {
+      elThiep.style.borderColor = '#d4a017';
+      color_titleEl.style.color = '#d4a017';
+    } else if (colorValue === 'tim') {
+      elThiep.style.borderColor = '#b366ff';
+      color_titleEl.style.color = '#b366ff';
+    } else if (colorValue === 'hong_dao') {
+      elThiep.style.borderColor = '#ff9999';
+      color_titleEl.style.color = '#ff6666';
+    }
+
     // 2. Ảnh nền từ gallery
     if (bgSelect.value) {
       elThiep.style.backgroundImage    = `url(${bgSelect.value})`;
@@ -422,12 +464,26 @@
 
     // 4. Nội dung văn bản
     const ten = tenInput.value.trim()     || 'Cô Thân Mến';
-    const msg = contentInput.value.trim() || 'Chúc bạn mọi điều tốt đẹp.';
+    const msg = contentInput.value.trim() || 'Chúc cô mọi điều tốt đẹp.';
     const lop = lopInput.value.trim()     || '10D6';
 
     recipientEl.textContent = `Gửi ${ten},`;
     messageEl.textContent   = msg;
     lopbanEl.textContent    = `Gửi từ lớp ${lop} thân yêu.`;
+
+    // 5. In cuối
+    const cuoiValue = phancuoiEl.value;
+    let signText = '';
+    if (cuoiValue === '1') {
+      signText = '— Cùng B&M, con gửi chút yêu thương chân thành';
+      signEl.textContent = signText;
+    } else if (cuoiValue === '2') {
+      signText = '— Từ tấm lòng nhỏ bé, cùng B&M lan tỏa yêu thương';
+      signEl.textContent = signText;
+    } else if (cuoiValue === '3') {
+      signText = '— Cùng B&M hành đồng đầy ý nghĩa';
+      signEl.textContent = signText;
+    }
   }
 
   // === Xử lý upload ảnh tùy chỉnh ===
@@ -462,8 +518,8 @@
     
     // Cấu hình tối ưu cho xuất PDF
     const opt = {
-      margin: 0,
-      filename: `ThiepChuc_${tenInput.value.trim() || 'Thiep'}.pdf`,
+      margin: [50, 0],
+      filename: `B&M_su_kien_20_thang_10_${tenInput.value.trim() || 'Thiep'}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2, 
@@ -472,9 +528,9 @@
         backgroundColor: null
       },
       jsPDF: { 
-        unit: 'px', 
-        format: [elThiep.offsetWidth, elThiep.offsetHeight], 
-        orientation: 'portrait' 
+        unit: 'mm',          //  Dùng đơn vị mm để khớp với A4
+        format: 'a4',        //  Xuất đúng khổ giấy A4
+        orientation: 'portrait'
       }
     };
 
@@ -485,7 +541,12 @@
     thiepClone.style.position = 'relative';
     thiepClone.style.width = elThiep.offsetWidth + 'px';
     thiepClone.style.height = elThiep.offsetHeight + 'px';
-    
+
+    // Thêm căn giữa thiệp trong trang PDF
+    thiepClone.style.display = 'block';
+    thiepClone.style.margin = '0 auto'; // căn giữa ngang
+    thiepClone.style.padding = '50px 0'; // thêm chút khoảng cách trên dưới
+
     // Tạo một div tạm thời để chứa bản sao
     const tempDiv = document.createElement('div');
     tempDiv.style.position = 'fixed';
@@ -501,7 +562,7 @@
     }).catch(err => {
       console.error('Lỗi khi tạo PDF:', err);
       loadingEl.style.display = 'none';
-      alert('Có lỗi xảy ra khi tạo PDF. Vui lòng thử lại.');
+      alert('Đã có lỗi khi tải PDF. Hãy kiểm tra quyền tải xuống trên trình duyệt hoặc liên hệ với quản trị viên.');
     });
   }
 
