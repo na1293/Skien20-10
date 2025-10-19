@@ -300,6 +300,24 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Chỉ áp dụng cho màn hình nhỏ */
+    @media (max-width: 768px) {
+      #thiep {
+        width: 1500px;    
+        height: 500px;   
+        max-height: 95vh; 
+        margin: 2.5vh auto;
+        font-size: 16px;  
+      }
+
+      #thiep .message {
+        height: auto;       
+        overflow: visible; 
+        word-wrap: break-word; /* xuống dòng nếu quá dài */
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -379,8 +397,8 @@
         Tải ảnh lên để làm thiệp nhé! Ứng dụng hoạt động tốt nhất trên trình duyệt Chrome và Safari.
       </p>
     </div>
-
-    <div class="preview-wrap">
+    <div class="">
+          <p class="note">Đừng lo, thiệp preview to thế là tính năng xuất PDF siêu đẹp thôi 😎 Không phải lỗi đâu!</p>
       <div id="thiep" class="mauvien">
         <div class="title" id="color-title">Lời chúc yêu thương 20-10</div>
         <div id="lopban" class="lopban"></div>
@@ -410,6 +428,53 @@
   const phancuoiEl   = document.getElementById('cuoi');
   const signEl       = document.getElementById('signText');
   const color_titleEl = document.getElementById('color-title');
+
+  // === Fix mobie UI PDF ===
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // Code chỉ chạy trên điện thoại
+    function exportPDFMobile() {
+      updatePreview();
+      loadingEl.style.display = 'block';
+
+      const opt = {
+        margin: [30, 0],
+        filename: `B&M_su_kien_20_thang_10_${tenInput.value.trim() || 'Thiep'}.pdf`,
+        image: { type: 'jpeg', quality: 0.95 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: null },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      const thiepClone = elThiep.cloneNode(true);
+      thiepClone.style.boxShadow = 'none';
+      thiepClone.style.transform = 'none';
+      const width = 5000;   // px
+      const height = 5130; // px
+      thiepClone.style.width = elThiep.offsetWidth + 'px';
+      thiepClone.style.height = elThiep.offsetHeight + 'px';
+
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'fixed';
+      tempDiv.style.left = '-9999px';
+      tempDiv.appendChild(thiepClone);
+      document.body.appendChild(tempDiv);
+
+      html2pdf()
+        .set(opt)
+        .from(thiepClone)
+        .save()
+        .then(() => {
+          document.body.removeChild(tempDiv);
+          loadingEl.style.display = 'none';
+        })
+        .catch(err => {
+          console.error('Lỗi PDF (mobile):', err);
+          loadingEl.style.display = 'none';
+        });
+    }
+
+    // Gán vào nút riêng hoặc gọi trực tiếp:
+    // document.getElementById("btnMobileExport").onclick = exportPDFMobile;
+  }
 
   // === Event listeners ===
   selectMau.addEventListener('change', updatePreview);
