@@ -333,6 +333,38 @@
         <option value="vang">💛 Vàng tươi</option>
         <option value="tim">💜 Tím nhẹ</option>
         <option value="hong_dao">🌹 Hồng đào</option>
+        <option value="xanh_la">💚 Màu xanh lá</option>
+      </select>
+
+      <label class="text">Phông chữ</label>
+      <select id="text_style" class="input" onchange="updatePreview()">
+        <!-- Hệ thống cơ bản -->
+        <option value="Arial">Cơ bản (Arial)</option>
+        <option value="Tahoma">Nét thanh (Tahoma)</option>
+        <option value="Verdana">Rõ ràng (Verdana)</option>
+        <option value="Helvetica">Hiện đại (Helvetica)</option>
+        <option value="Trebuchet MS">Trang nhã (Trebuchet MS)</option>
+        
+        <!-- Font trang trọng / cổ điển -->
+        <option value="Times New Roman">Trang trọng (Times New Roman)</option>
+        <option value="Georgia">Trang nhã (Georgia)</option>
+        <option value="Palatino Linotype">Cổ điển (Palatino Linotype)</option>
+        <option value="Garamond">Thanh lịch (Garamond)</option>
+        <option value="Book Antiqua">Cổ điển nhẹ (Book Antiqua)</option>
+        
+        <!-- Font vui nhộn / thư pháp -->
+        <option value="Comic Sans MS">Vui nhộn (Comic Sans MS)</option>
+        <option value="Lucida Handwriting">Cảm xúc (Lucida Handwriting)</option>
+        <option value="Lucida Calligraphy">Thư pháp (Lucida Calligraphy)</option>
+        <option value="Brush Script MT">Thư pháp (Brush Script MT)</option>
+        
+        <!-- Google Fonts phổ biến, import khi dùng web -->
+        <option value="'Dancing Script', cursive">Ngọt ngào (Dancing Script)</option>
+        <option value="'Great Vibes', cursive">Lãng mạn (Great Vibes)</option>
+        <option value="'Pacifico', cursive">Tươi vui (Pacifico)</option>
+        <option value="'Roboto', sans-serif">Hiện đại (Roboto)</option>
+        <option value="'Open Sans', sans-serif">Rõ ràng (Open Sans)</option>
+        <option value="'Lato', sans-serif">Tinh tế (Lato)</option>
       </select>
 
       <label for="can" class="text">Căn lề chữ</label>
@@ -365,8 +397,8 @@
       <label for="ten">Tên người nhận</label>
       <input id="ten" placeholder="Nhập tên người nhận" class="input">
       <p class="note">Khi tặng thiệp, hãy dành chút thời gian kể cho người nhận nghe về hành trình bạn tạo nên tấm thiệp này trong chiến dịch quyên góp sách thắp sáng ước mơ cho trẻ em khó khăn. Hành động ý nghĩa từ tấm lòng.</p>
-      <label for="lop" class="text">Nhập lớp của bạn</label>
-      <input id="lop" type="text" class="input" placeholder="Nhập lớp bạn đang học (VD: 10D6 hoặc D6)">
+      <label for="lop" class="text">Nhập lớp/tên của bạn</label>
+      <input id="lop" type="text" class="input" placeholder="Nhập lớp/tên bạn đang học (VD: 10D6 hoặc D6)">
 
       <label for="content" class="text">Lời chúc</label>
       <textarea id="content" class="input" placeholder="Nhập lời chúc...">Có những ngày dù nắng hay mưa, những ngày ngồi nghe tiếng cô giảng, đó là một trong những ký ức tuổi học trò thật tươi đẹp. Dưới mái trường thân yêu, trên con đò cập bến tri thức, nhân ngày 20/10: Con xin chúc cô luôn mạnh khỏe, luôn rực rỡ để tiếp tục cùng chúng con đi đi tiếp những quãng đường phía trước để cập bến tri thức.</textarea>
@@ -428,6 +460,7 @@
   const phancuoiEl   = document.getElementById('cuoi');
   const signEl       = document.getElementById('signText');
   const color_titleEl = document.getElementById('color-title');
+  const text_styleEl = document.getElementById('text_style');
 
   // === Fix mobie UI PDF ===
   if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
@@ -511,6 +544,9 @@
     } else if (colorValue === 'hong_dao') {
       elThiep.style.borderColor = '#ff9999';
       color_titleEl.style.color = '#ff6666';
+    } else if (colorValue === 'xanh_la') {
+      elThiep.style.borderColor = '#cce5cc';
+      color_titleEl.style.color = '#99cc99';
     }
 
     // 2. Ảnh nền từ gallery
@@ -530,24 +566,34 @@
     // 4. Nội dung văn bản
     const ten = tenInput.value.trim()     || 'Cô Thân Mến';
     const msg = contentInput.value.trim() || 'Chúc cô mọi điều tốt đẹp.';
-    const lop = lopInput.value.trim()     || '10D6';
+    const lop = lopInput.value.trim()     || '10D6 thân yêu.';
 
     recipientEl.textContent = `Gửi ${ten},`;
     messageEl.textContent   = msg;
-    lopbanEl.textContent    = `Gửi từ lớp ${lop} thân yêu.`;
+    lopbanEl.textContent    = `Gửi từ ${lop}`;
 
     // 5. In cuối
     const cuoiValue = phancuoiEl.value;
     let signText = '';
     if (cuoiValue === '1') {
-      signText = '— Cùng B&M, con gửi chút yêu thương chân thành';
+      signText = '— Cùng B&M, gửi chút yêu thương chân thành';
       signEl.textContent = signText;
     } else if (cuoiValue === '2') {
-      signText = '— Từ tấm lòng nhỏ bé, cùng B&M lan tỏa yêu thương';
+      signText = '— Từ tấm lòng';
       signEl.textContent = signText;
     } else if (cuoiValue === '3') {
       signText = '— Cùng B&M hành đồng đầy ý nghĩa';
       signEl.textContent = signText;
+    }
+
+    // 6. Phông chữ tùy chỉnh cho nội dung và tiêu đề
+    const selectedFont = text_styleEl.value;
+    if (selectedFont) {
+      messageEl.style.fontFamily = selectedFont;
+      color_titleEl.style.fontFamily = selectedFont;
+    } else {
+      messageEl.style.fontFamily = '';
+      color_titleEl.style.fontFamily = '';
     }
   }
 
