@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:description" content="Tạo thiệp 20/10 dễ dàng cùng B&M. Chọn mẫu, nhập lời chúc và tải về PDF ngay!">
-  <title>Làm thiệp 20/10 cùng B&M</title>
+  <meta property="og:description" content="Tạo thiệp 20/10 dễ dàng cùng MODM. Chọn mẫu, nhập lời chúc và tải về PDF ngay!">
+  <title>Làm thiệp 20/10 cùng MODM</title>
 
   <!-- Fonts (hỗ trợ tiếng Việt) -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital@0;1&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
@@ -128,7 +128,8 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    
+
+
     #thiep {
       width: 100%;
       max-width: 500px;
@@ -235,9 +236,10 @@
       .lopban { font-size: 18px; }
       .message { font-size: 20px; margin-top: 28px; max-height: none; }
       .sign { font-size: 16px; right: 36px; bottom: 28px; }
+
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 414px) {
       #thiep {
         height: 320px;
         padding: 20px;
@@ -406,9 +408,9 @@
 
       <label class="text">Gắn phần cuối</label>
       <select id="cuoi" class="input" onchange="updatePreview()">
-        <option value="1">— Cùng với B&M</option>
+        <option value="1">— Cùng với MODM</option>
         <option value="2">— Từ tấm lòng</option>
-        <option value="3">— Cùng B&M hành đồng đầy ý nghĩa</option>
+        <option value="3">— Cùng MODM hành đồng đầy ý nghĩa</option>
       </select>
 
       <label for="bgfile" class="text">Upload ảnh nền</label>
@@ -471,7 +473,7 @@
 
       const opt = {
         margin: [30, 0],
-        filename: `B&M_su_kien_20_thang_10_${tenInput.value.trim() || 'Thiep'}.pdf`,
+        filename: `MODM_su_kien_20_thang_10_${tenInput.value.trim() || 'Thiep'}.pdf`,
         image: { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2, useCORS: true, backgroundColor: null },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -576,13 +578,13 @@
     const cuoiValue = phancuoiEl.value;
     let signText = '';
     if (cuoiValue === '1') {
-      signText = '— Cùng B&M, gửi chút yêu thương chân thành';
+      signText = '— Cùng MODM, gửi chút yêu thương chân thành';
       signEl.textContent = signText;
     } else if (cuoiValue === '2') {
       signText = '— Từ tấm lòng';
       signEl.textContent = signText;
     } else if (cuoiValue === '3') {
-      signText = '— Cùng B&M hành đồng đầy ý nghĩa';
+      signText = '— Cùng MODM hành đồng đầy ý nghĩa';
       signEl.textContent = signText;
     }
 
@@ -630,7 +632,7 @@
     // Cấu hình tối ưu cho xuất PDF
     const opt = {
       margin: [50, 0],
-      filename: `B&M_su_kien_20_thang_10_${tenInput.value.trim() || 'Thiep'}.pdf`,
+      filename: `MODM_su_kien_20_thang_10_${tenInput.value.trim() || 'Thiep'}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2, 
