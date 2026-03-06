@@ -1,54 +1,175 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Mã hoá lời chúc kiểu Morse</title>
-<style>
-  body { 
-    font-family: sans-serif; 
-    text-align: center; 
-    margin-top: 60px;
-    background: #f9f9f9;
-  }
-  textarea { 
-    width: 60%; 
-    height: 100px; 
-    resize: none;
-    padding: 10px; 
-    border-radius: 6px; 
-    border: 1px solid #ccc; 
-    font-family: inherit; 
-  }
-  button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    background: #c27ba0;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  button:hover { background: #a85f87; }
-  .output {
-    width: 60%;
-    margin: 20px auto;
-    background: #fff;
-    border-radius: 6px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    text-align: left;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mã hoá Morse GenZ</title>
+    <style>
+        :root {
+            --primary-color: #c27ba0;
+            --hover-color: #a85f87;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0;
+            padding: 20px 15px;
+            background: var(--bg-color);
+            color: #333;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        h2 { 
+            text-align: center;
+            margin: 0 0 10px 0; 
+            font-size: 1.6rem; 
+            color: var(--primary-color);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            position: relative;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        textarea { 
+            width: 100%;
+            height: 120px; 
+            resize: none;
+            padding: 12px; 
+            border-radius: 10px; 
+            border: 2px solid #eee; 
+            font-size: 16px; 
+            box-sizing: border-box;
+            transition: all 0.3s;
+            outline: none;
+            background: #fafafa;
+        }
+
+        textarea:focus { 
+            border-color: var(--primary-color); 
+            background: #fff;
+            box-shadow: 0 0 8px rgba(194, 123, 160, 0.2);
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .char-count.limit { color: #d9534f; }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px; 
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 4px 0 #a85f87; /* Hiệu ứng nút 3D nhẹ */
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #a85f87;
+        }
+
+        .output-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h3 { margin: 0; font-size: 1rem; color: var(--primary-color); }
+
+        #copyBtn {
+            padding: 5px 12px;
+            font-size: 12px;
+            width: auto;
+            flex: none;
+            background: #6c757d;
+            box-shadow: none;
+            border-radius: 6px;
+        }
+
+        .output-content {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 60px;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace; /* Kiểu Morse dùng font này rất hợp */
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+            border: 1px solid #eee;
+        }
+
+        @media (max-width: 350px) {
+            .btn-group { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
-  <h2>✨ Mã hoá lời chúc ✨</h2>
-  <textarea id="input" placeholder="Nhập lời chúc ở đây..."></textarea><br>
-  <button onclick="maHoa()">Mã hoá</button>
-  <button onclick="giaiMa()">Giải mã</button>
-  <div class="output">
-    <h3>Kết quả:</h3>
-    <p id="output"></p>
-  </div>
+
+<div class="container">
+    <h2>✨ Morse Secret ✨</h2>
+    
+    <div class="input-group">
+        <textarea id="input" placeholder="Nhập lời chúc hoặc mã Morse..." maxlength="5000" oninput="updateCharCount()"></textarea>
+        <div class="char-count" id="charCount">0 / 5000</div>
+    </div>
+
+    <div class="btn-group">
+        <button onclick="maHoa()">Mã hoá</button>
+        <button onclick="giaiMa()">Giải mã</button>
+    </div>
+
+    <div class="output-section">
+        <div class="output-header">
+            <h3>KẾT QUẢ:</h3>
+            <button id="copyBtn" onclick="copyResult()">Sao chép</button>
+        </div>
+        <div class="output-content" id="output">...</div>
+    </div>
+</div>
 
 <script>
 const morse = {
@@ -60,49 +181,59 @@ const morse = {
     0: "+++80", 1: "+10", 2: "+11", 3: "+12", 4: "++10",
     5: "++11", 6: "++12", 7: "+++10", 8: "+++11", 9: "+++12",
     " ": "-", "and": "+++8",
-    
-    // Chữ A và các dấu
     "Ă": "/+1", "Ắ": "/+2", "Ằ": "/+3", "Ẳ": "/+4", "Ẵ": "/+5", "Ặ": "/+6",
     "Â": "/+7", "Ấ": "/+8", "Ầ": "/+9", "Ẩ": "/++1", "Ẫ": "/++2", "Ậ": "/++3",
     "Á": "/++4", "À": "/++5", "Ả": "/++6", "Ã": "/++7", "Ạ": "/++8",
-    
-    // Chữ E và các dấu
     "É": "/++9", "È": "/+++1", "Ẻ": "/+++2", "Ẽ": "/+++3", "Ẹ": "/+++4",
     "Ê": "/+++5", "Ế": "/+++6", "Ề": "/+++7", "Ể": "/+++8", "Ễ": "/+++9", "Ệ": "//+1",
-    
-    // Chữ I và các dấu
     "Í": "//+2", "Ì": "//+3", "Ỉ": "//+4", "Ĩ": "//+5", "Ị": "//+6",
-    
-    // Chữ O và các dấu
     "Ó": "//+7", "Ò": "//+8", "Ỏ": "//+9", "Õ": "//++1", "Ọ": "//++2",
     "Ô": "//++3", "Ố": "//++4", "Ồ": "//++5", "Ổ": "//++6", "Ỗ": "//++7", "Ộ": "//++8",
     "Ơ": "//++9", "Ớ": "//+++1", "Ờ": "//+++2", "Ở": "//+++3", "Ỡ": "//+++4", "Ợ": "//+++5",
-    
-    // Chữ U và các dấu
     "Ú": "//+++6", "Ù": "//+++7", "Ủ": "//+++8", "Ũ": "//+++9", "Ụ": "///+1",
     "Ư": "///+2", "Ứ": "///+3", "Ừ": "///+4", "Ử": "///+5", "Ữ": "///+6", "Ự": "///+7",
-    
-    // Chữ Y và các dấu
     "Ý": "///+8", "Ỳ": "///+9", "Ỷ": "///++1", "Ỹ": "///++2", "Ỵ": "///++3",
-    
-    // Chữ Đ
     "Đ": "///++4",
-
-    // Dấu
-    "?": "0", "!": "-1", "!?": "-2", "?!": "-3", ":": ">", ";": "<", ")": "x80", "(": "%0", "=": "eqr", ",": "&", ".": "21h", "-": "div", "+": "*", "/": "^"
+    "?": "0", "!": "-1", "!?": "-2", "?!": "-3", ":": ">", ";": "<", ")": "x80", "(": "%0", "=": "eqr", ",": "&", ".": "21h", "-": "div", "+": "*", "/": "^", "~": "_-", "&": "t1", "<": "-128xopen", ">": "128xclose"
 };
+
 const morseToText = Object.fromEntries(Object.entries(morse).map(([k,v]) => [v, k]));
 
+function updateCharCount() {
+    const input = document.getElementById("input");
+    const charCount = document.getElementById("charCount");
+    const length = input.value.length;
+    charCount.textContent = `${length} / 5000`;
+    length >= 5000 ? charCount.classList.add("limit") : charCount.classList.remove("limit");
+}
+
 function maHoa() {
-  const text = document.getElementById("input").value.toUpperCase();
-  const encoded = text.split("").map(ch => morse[ch] || ch).join(" ");
-  document.getElementById("output").textContent = encoded;
+    const text = document.getElementById("input").value.toUpperCase();
+    if(!text) return;
+    const encoded = text.split("").map(ch => morse[ch] || ch).join(" ");
+    document.getElementById("output").textContent = encoded;
 }
 
 function giaiMa() {
-  const code = document.getElementById("input").value.trim().split(" ");
-  const decoded = code.map(c => morseToText[c] || (c === "/" ? " " : c)).join("");
-  document.getElementById("output").textContent = decoded;
+    const code = document.getElementById("input").value.trim().split(" ");
+    if(!code[0]) return;
+    const decoded = code.map(c => morseToText[c] || (c === "/" ? " " : c)).join("");
+    document.getElementById("output").textContent = decoded;
+}
+
+function copyResult() {
+    const resultText = document.getElementById("output").textContent;
+    if (resultText === "..." || resultText === "") return;
+    
+    navigator.clipboard.writeText(resultText).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.innerText = "Đã sao chép";
+        btn.style.background = "#28a745";
+        setTimeout(() => {
+            btn.innerText = "Copy";
+            btn.style.background = "#6c757d";
+        }, 2000);
+    });
 }
 </script>
 </body>
